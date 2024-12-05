@@ -2,12 +2,11 @@ import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
 const startBtn = document.querySelector('[data-start]');
-const days = document.querySelector('[data-days]');
-const hours = document.querySelector('[data-hours]');
-const minutes = document.querySelector('[data-minutes]');
-const seconds = document.querySelector('[data-seconds]');
+const daysEl = document.querySelector('[data-days]');
+const hoursEl = document.querySelector('[data-hours]');
+const minutesEl = document.querySelector('[data-minutes]');
+const secondsEl = document.querySelector('[data-seconds]');
 let targetDate = 0;
-console.log('🚀  targetDate:', targetDate);
 
 const options = {
   enableTime: true,
@@ -16,6 +15,7 @@ const options = {
   minuteIncrement: 1,
   onClose(selectedDates) {
     targetDate = selectedDates[0].getTime();
+    console.log('🚀  targetDate:', targetDate);
     // console.log(selectedDates[0].getTime());
     if (targetDate <= Date.now()) {
       window.alert('Please choose a date in the future');
@@ -33,7 +33,15 @@ startBtn.addEventListener('click', onStartBtnClick);
 
 flatpickr('#datetime-picker', options);
 
-function onStartBtnClick() {}
+function onStartBtnClick() {
+  const intervalId = setInterval(() => {
+    const remainingTime = targetDate - Date.now();
+    // const remainingTimeObject = convertMs(remainingTime);
+    // const { days, hours, minutes, seconds } = remainingTimeObject;
+    const { days, hours, minutes, seconds } = convertMs(remainingTime);
+    daysEl.textContent = days;
+  }, 1000);
+}
 
 function convertMs(ms) {
   // Number of milliseconds per unit of time
