@@ -1,5 +1,6 @@
+import Notiflix from 'notiflix';
 import flatpickr from 'flatpickr';
-import 'flatpickr/dist/flatpickr.min.css';
+import 'flatpickr/dist/themes/dark.css';
 
 const inputEl = document.querySelector('#datetime-picker');
 const startBtn = document.querySelector('[data-start]');
@@ -19,13 +20,19 @@ const options = {
   onClose(selectedDates) {
     targetDate = selectedDates[0].getTime();
 
-    if (targetDate <= Date.now()) {
-      window.alert('Please choose a date in the future');
+    if (!selectedDates.length || targetDate <= Date.now()) {
+      // window.alert('Please choose a date in the future');
+      Notiflix.Notify.failure('Please choose a date in the future', {
+        width: '30%',
+        clickToClose: true,
+        fontSize: '16px',
+      });
+      targetDate = null;
+      startBtn.disabled = true;
+      return;
     }
 
-    if (targetDate > Date.now()) {
-      startBtn.disabled = false;
-    }
+    startBtn.disabled = false;
   },
 };
 
@@ -47,7 +54,16 @@ function onStartBtnClick() {
 
     if (remainingTime < 1000) {
       clearInterval(intervalId);
-      //   clearTextContent();
+      Notiflix.Notify.success('Timer has finished!', {
+        width: '30%',
+        clickToClose: true,
+        fontSize: '16px',
+      });
+      clearTextContent();
+      stopBtn.disabled = true;
+      startBtn.disabled = true;
+      inputEl.disabled = false;
+      return;
     }
 
     const convertedTime = convertMs(remainingTime);
@@ -60,6 +76,7 @@ function onStopBtnClick() {
   clearInterval(intervalId);
 
   clearTextContent();
+  targetDate = null;
 
   stopBtn.disabled = true;
   inputEl.disabled = false;
@@ -69,9 +86,13 @@ function updateTextContent(time) {
   const { days, hours, minutes, seconds } = time;
 
   daysEl.textContent = days;
-  hoursEl.textContent = hours.toString().padStart(2, 0);
-  minutesEl.textContent = minutes.toString().padStart(2, 0);
-  secondsEl.textContent = seconds.toString().padStart(2, 0);
+  hoursEl.textContent = addLeadingZero(hours);
+  minutesEl.textContent = addLeadingZero(minutes);
+  secondsEl.textContent = addLeadingZero(seconds);
+}
+
+function addLeadingZero(value) {
+  return value.toString().padStart(2, 0);
 }
 
 function clearTextContent() {
