@@ -1,12 +1,15 @@
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
+const inputEl = document.querySelector('#datetime-picker');
 const startBtn = document.querySelector('[data-start]');
+const stopBtn = document.querySelector('[data-stop]');
 const daysEl = document.querySelector('[data-days]');
 const hoursEl = document.querySelector('[data-hours]');
 const minutesEl = document.querySelector('[data-minutes]');
 const secondsEl = document.querySelector('[data-seconds]');
-let targetDate = 0;
+let targetDate = null;
+let intervalId = null;
 
 const options = {
   enableTime: true,
@@ -15,32 +18,67 @@ const options = {
   minuteIncrement: 1,
   onClose(selectedDates) {
     targetDate = selectedDates[0].getTime();
-    console.log('🚀  targetDate:', targetDate);
-    // console.log(selectedDates[0].getTime());
+
     if (targetDate <= Date.now()) {
       window.alert('Please choose a date in the future');
     }
 
-    if (selectedDates[0].getTime() > Date.now()) {
+    if (targetDate > Date.now()) {
       startBtn.disabled = false;
     }
   },
 };
 
 startBtn.disabled = true;
+stopBtn.disabled = true;
 
 startBtn.addEventListener('click', onStartBtnClick);
+stopBtn.addEventListener('click', onStopBtnClick);
 
 flatpickr('#datetime-picker', options);
 
 function onStartBtnClick() {
-  const intervalId = setInterval(() => {
+  startBtn.disabled = true;
+  stopBtn.disabled = false;
+  inputEl.disabled = true;
+
+  intervalId = setInterval(() => {
     const remainingTime = targetDate - Date.now();
-    // const remainingTimeObject = convertMs(remainingTime);
-    // const { days, hours, minutes, seconds } = remainingTimeObject;
-    const { days, hours, minutes, seconds } = convertMs(remainingTime);
-    daysEl.textContent = days;
+
+    if (remainingTime < 1000) {
+      clearInterval(intervalId);
+      //   clearTextContent();
+    }
+
+    const convertedTime = convertMs(remainingTime);
+
+    updateTextContent(convertedTime);
   }, 1000);
+}
+
+function onStopBtnClick() {
+  clearInterval(intervalId);
+
+  clearTextContent();
+
+  stopBtn.disabled = true;
+  inputEl.disabled = false;
+}
+
+function updateTextContent(time) {
+  const { days, hours, minutes, seconds } = time;
+
+  daysEl.textContent = days;
+  hoursEl.textContent = hours.toString().padStart(2, 0);
+  minutesEl.textContent = minutes.toString().padStart(2, 0);
+  secondsEl.textContent = seconds.toString().padStart(2, 0);
+}
+
+function clearTextContent() {
+  daysEl.textContent = '00';
+  hoursEl.textContent = '00';
+  minutesEl.textContent = '00';
+  secondsEl.textContent = '00';
 }
 
 function convertMs(ms) {
