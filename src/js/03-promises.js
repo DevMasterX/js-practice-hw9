@@ -9,34 +9,51 @@ function createPromise(position, delay) {
 
 // ------------------------------------
 
-// const promise = new Promise((res, rej) => {
-//   setTimeout(() => {
-//     const val = Math.random();
+// const start = document.querySelector('.js-start');
+// const container = document.querySelector('.js-container');
 
-//     if (val > 0.5) {
-//       res('yesssss');
-//     } else {
-//       rej('Nooooooooo');
-//     }
-//   }, 3000);
-// });
-// console.log(promise);
+// start.addEventListener('click', onStart);
 
-// promise
-//   .then(val => {
-//     return val + '😁';
-//   })
-//   .then(val => console.log(val))
-//   .catch(err => console.error(err))
-//   .finally(() => console.log('Finally'));
+// function onStart() {
+//   const result = [];
+//   [...container.children].forEach((box, i) => (box.textContent = ''));
+//   [...container.children].forEach((box, i) => {
+//     return createPromise(i)
+//       .then(smile => {
+//         box.textContent = smile;
+//         result.push('1');
+//       })
+//       .catch(smile => {
+//         box.textContent = smile;
+//       })
+//       .finally(() => {
+//         setTimeout(() => {
+//           if (i === container.children.length - 1) {
+//             if (!result.length || result.length === 3) {
+//               alert('Winner 🍒🍒🍒');
+//             } else {
+//               alert('❌Lost money!!!!😪😪😩');
+//             }
+//           }
+//         }, 500);
+//       });
+//   });
+// }
 
-// const promise = fetch('https://pokeapi.co/api/v2/pokemon/ditto');
-// console.log('🚀  promise:', promise);
+// function createPromise(delay) {
+//   return new Promise((resolve, reject) => {
+//     setTimeout(() => {
+//       const random = Math.random();
+//       if (random > 0.55) {
+//         resolve('💵');
+//       } else {
+//         reject('❌');
+//       }
+//     }, 1000 * delay + 500);
+//   });
+// }
 
-// promise
-//   .then(resp => resp.json())
-//   .then(data => console.log(data))
-//   .catch(err => console.error(err));
+// ----------------------------------------------------------------
 
 const start = document.querySelector('.js-start');
 const container = document.querySelector('.js-container');
@@ -44,40 +61,40 @@ const container = document.querySelector('.js-container');
 start.addEventListener('click', onStart);
 
 function onStart() {
-  const result = [];
+  let counter = 0;
+
   [...container.children].forEach((box, i) => (box.textContent = ''));
-  [...container.children].forEach((box, i) => {
-    return createPromise(i)
-      .then(smile => {
-        box.textContent = smile;
-        result.push('1');
-      })
-      .catch(smile => {
-        box.textContent = smile;
-      })
-      .finally(() => {
-        setTimeout(() => {
-          if (i === container.children.length - 1) {
-            if (!result.length || result.length === 3) {
-              alert('Winner');
+  const promises = [...container.children].map((_, i) => createPromise(i));
+
+  Promise.allSettled(promises).then(items => {
+    items.forEach((item, i) => {
+      setTimeout(() => {
+        if (item.status === 'fulfilled') {
+          counter += 1;
+        }
+        container.children[i].textContent = item.value || item.reason;
+
+        if (i === container.children.length - 1) {
+          setTimeout(() => {
+            if (counter === container.children.length || !counter) {
+              alert('Winner 🍒🍒🍒');
             } else {
-              alert('Lost money!!!!😪😪😩');
+              alert('❌Lost money!!!!😪😪😩');
             }
-          }
-        }, 500);
-      });
+          }, 500);
+        }
+      }, i * 1000);
+    });
   });
 }
 
-function createPromise(delay) {
+function createPromise() {
   return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const random = Math.random();
-      if (random > 0.55) {
-        resolve('💵');
-      } else {
-        reject('❌');
-      }
-    }, 1000 * delay + 1000);
+    const random = Math.random();
+    if (random > 0.55) {
+      resolve('💵');
+    } else {
+      reject('❌');
+    }
   });
 }
