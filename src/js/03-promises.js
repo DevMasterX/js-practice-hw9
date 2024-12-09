@@ -44,14 +44,27 @@ const container = document.querySelector('.js-container');
 start.addEventListener('click', onStart);
 
 function onStart() {
+  const result = [];
   [...container.children].forEach((box, i) => (box.textContent = ''));
   [...container.children].forEach((box, i) => {
     return createPromise(i)
       .then(smile => {
         box.textContent = smile;
+        result.push('1');
       })
       .catch(smile => {
         box.textContent = smile;
+      })
+      .finally(() => {
+        setTimeout(() => {
+          if (i === container.children.length - 1) {
+            if (!result.length || result.length === 3) {
+              alert('Winner');
+            } else {
+              alert('Lost money!!!!😪😪😩');
+            }
+          }
+        }, 500);
       });
   });
 }
