@@ -16,3 +16,53 @@ img {
   display: block;
   max-width: 100%;
 }
+
+/* 
+ */
+
+/* ---------------------------test--------- */
+.js-container {
+  display: flex;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+.item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60px;
+  height: 60px;
+  outline: 1px solid red;
+}
+
+.js-start {
+  display: inline-block;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #fff;
+  background: linear-gradient(45deg, #6a11cb, #2575fc);
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
+}
+
+.js-start:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(45deg, #2575fc, #6a11cb);
+}
+
+.js-start:active {
+  transform: translateY(2px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+}
+
+.js-start:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(37, 117, 252, 0.4);
+}
