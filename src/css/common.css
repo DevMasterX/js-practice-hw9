@@ -21,7 +21,7 @@ img {
  */
 
 /* ---------------------------test--------- */
-.js-container {
+/* .js-container {
   display: flex;
   gap: 15px;
   margin-top: 25px;
@@ -65,4 +65,4 @@ img {
 .js-start:focus {
   outline: none;
   box-shadow: 0 0 0 3px rgba(37, 117, 252, 0.4);
-}
+} */
